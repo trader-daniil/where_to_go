@@ -1,3 +1,16 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Place
+
+
+@admin.register(Place)
+class AdminPlace(admin.ModelAdmin):
+    list_display = (
+        'title',
+        'lat',
+        'lng',
+    )
+    search_fields = (
+        'title',
+        'description_long',
+    )
