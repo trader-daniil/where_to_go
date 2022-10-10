@@ -1,4 +1,6 @@
+from tabnanny import verbose
 from django.db import models
+
 
 class Place(models.Model):
     """
@@ -16,3 +18,22 @@ class Place(models.Model):
     )
     lat = models.FloatField(verbose_name='Широта в местоположении')
     lng = models.FloatField(verbose_name='Долгота в местоположении')
+
+
+class PlaceImage(models.Model):
+    """
+    Модель изображения для места.
+    """
+    place = models.ForeignKey(
+        Place,
+        related_name='images',
+        on_delete=models.CASCADE,
+        verbose_name='место на фотографии',
+    )
+    image = models.ImageField(
+        verbose_name='Изображение места',
+    )
+
+    def __str__(self):
+        return f'{self.id} {self.place.title}'
+
