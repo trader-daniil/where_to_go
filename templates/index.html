@@ -46,11 +46,11 @@
           "type": "Feature",
           "geometry": {
             "type": "Point",
-            "coordinates": [37.62, 55.793676]
+            "coordinates": [{{ first_place.conditions.lat }}, {{ first_place.conditions.lng }}]
           },
           "properties": {
-            "title": "«Легенды Москвы",
-            "placeId": "moscow_legends",
+            "title": "{{ first_place.title }}",
+            "placeId": "{{ first_place.place_id }}",
             "detailsUrl": "{% static 'places/moscow_legends.json' %}"
           }
         },
@@ -58,11 +58,11 @@
           "type": "Feature",
           "geometry": {
             "type": "Point",
-            "coordinates": [37.64, 55.753676]
+            "coordinates": [{{ second_place.conditions.lat }}, {{ second_place.conditions.lng }}]
           },
           "properties": {
-            "title": "Крыши24.рф",
-            "placeId": "roofs24",
+            "title": "{{ second_place.title }}",
+            "placeId": "{{ second_place.place_id }}",
             "detailsUrl": "{% static 'places/roofs24.json' %}"
           }
         }
