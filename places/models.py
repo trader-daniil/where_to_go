@@ -1,4 +1,3 @@
-from tabnanny import verbose
 from django.db import models
 
 
@@ -33,6 +32,13 @@ class PlaceImage(models.Model):
     image = models.ImageField(
         verbose_name='Изображение места',
     )
+    position = models.PositiveIntegerField(
+        null=True,
+        verbose_name='Позиция фото для места'
+    )
+
+    class Meta:
+        ordering = ['position']
 
     def __str__(self):
         return f'{self.id} {self.place.title}'

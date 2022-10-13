@@ -5,11 +5,16 @@ import traceback
 from django.utils.safestring import mark_safe
 from .models import Place, PlaceImage
 
+from adminsortable2.admin import SortableTabularInline
+from adminsortable2.admin import SortableAdminMixin
+from adminsortable2.admin import SortableAdminBase
 
-class ImageInstance(admin.TabularInline):
+
+class ImageInstance(SortableTabularInline):
     model = PlaceImage
     
     readonly_fields = ('show_image',)
+    ordering = ['position']
 
     def show_image(self, obj):
         width = 200 * (obj.image.width/obj.image.height)
@@ -20,7 +25,7 @@ class ImageInstance(admin.TabularInline):
 
 
 @admin.register(Place)
-class AdminPlace(admin.ModelAdmin):
+class SortablePlaceAdmin(SortableAdminBase, admin.ModelAdmin):
     list_display = (
         'title',
         'lat',
@@ -34,15 +39,9 @@ class AdminPlace(admin.ModelAdmin):
 
 
 @admin.register(PlaceImage)
-class AdminPlaceImage(admin.ModelAdmin):
-    list_display = ('get_place_image',)
-    """
+class AdminPlaceImage(SortableAdminMixin, admin.ModelAdmin):
+    ordering = ['position']
     readonly_fields = ('show_image',)
-    
+
     def show_image(self, obj):
         return mark_safe(f'<img src="{obj.image.url}" width="{obj.image.width}" height={obj.image.height} />')
-    """
-
-    @admin.display(ordering='-id')
-    def get_place_image(self, obj):
-        return f'{obj.id} {obj.place.title}'
