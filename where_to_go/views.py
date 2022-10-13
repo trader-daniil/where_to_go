@@ -1,6 +1,9 @@
 from django.shortcuts import render
+from django.urls import reverse
 from places.models import Place
 from django.http import JsonResponse
+import json
+from django.shortcuts import redirect
 
 
 def serialize_place(place):
@@ -17,24 +20,34 @@ def serialize_place(place):
             "lat": place.lat,
             "lng": place.lng
         },
+        "url_addres": reverse('current_place', args=[place.id])
     }
+
+
+def test_data(request):
+    places = Place.objects.prefetch_related('images').all()
+    serialized_places = [serialize_place(place=place) for place in places]
+    return render(
+        request=request,
+        template_name='index.html',
+        context={
+            'places': serialized_places,
+        }
+    )
 
 
 def show_places(request):
     """
     Возвращает главную страницу со всеми локациями на карте.
     """
-    first_place = Place.objects.prefetch_related('images').first()
-    second_place = Place.objects.prefetch_related('images').last()
-    first_place_serialized = serialize_place(place=first_place)
-    second_place_serialized = serialize_place(place=second_place)
+    places = Place.objects.prefetch_related('images').all()
+    serialized_places = [serialize_place(place=place) for place in places]
     return render(
         request=request,
         template_name='index.html',
         context={
-            'first_place': first_place_serialized,
-            'second_place': second_place_serialized,
-        },
+            'places': serialized_places,
+        }
     )
 
 
