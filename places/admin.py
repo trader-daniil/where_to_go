@@ -3,6 +3,9 @@ from django.contrib import admin
 
 from .models import Place, PlaceImage
 
+class ImageInstance(admin.StackedInline):
+    model = PlaceImage
+
 
 @admin.register(Place)
 class AdminPlace(admin.ModelAdmin):
@@ -15,6 +18,8 @@ class AdminPlace(admin.ModelAdmin):
         'title',
         'description_long',
     )
+    inlines = (ImageInstance,)
+
 
 @admin.register(PlaceImage)
 class AdminPlaceImage(admin.ModelAdmin):
