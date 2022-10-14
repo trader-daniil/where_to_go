@@ -1,9 +1,6 @@
 from django.shortcuts import render
-from django.urls import reverse
 from places.models import Place
 from django.http import JsonResponse
-import json
-from django.shortcuts import redirect
 
 
 def serialize_place(place):
@@ -16,24 +13,12 @@ def serialize_place(place):
         "imgs": [place_photo.image.url for place_photo in place.images.all()],
         "description_short": place.description_short,
         "description_long": place.description_long,
-        "conditions": {
+        "coordinates": {
             "lat": place.lat,
             "lng": place.lng
         },
-        "url_addres": reverse('current_place', args=[place.id])
+        "url_addres": place.get_absolute_url(),
     }
-
-
-def test_data(request):
-    places = Place.objects.prefetch_related('images').all()
-    serialized_places = [serialize_place(place=place) for place in places]
-    return render(
-        request=request,
-        template_name='index.html',
-        context={
-            'places': serialized_places,
-        }
-    )
 
 
 def show_places(request):
@@ -44,7 +29,7 @@ def show_places(request):
     serialized_places = [serialize_place(place=place) for place in places]
     return render(
         request=request,
-        template_name='index.html',
+        template_name='mainpage.html',
         context={
             'places': serialized_places,
         }
@@ -55,7 +40,7 @@ def show_place(request, place_id):
     """
     Возвращает страницу с местом по переданному id.
     """
-    place = Place.objects.get(id=place_id)
+    place = Place.objects.prefetch_related('images').get(id=place_id)
     serialized_place = serialize_place(place=place)
     return JsonResponse(
         data=serialized_place,
