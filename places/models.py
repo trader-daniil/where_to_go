@@ -33,8 +33,10 @@ class Place(models.Model):
         ]
 
     def get_absolute_url(self):
-        return reverse('specific_place', kwargs={'place_id':str(self.id)})
-
+        return reverse(
+            'specific_place',
+            kwargs={'place_id': str(self.id)},
+        )
 
 
 class PlaceImage(models.Model):
