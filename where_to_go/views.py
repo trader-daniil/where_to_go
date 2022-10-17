@@ -21,7 +21,7 @@ def serialize_place(place):
     }
 
 
-def show_places(request):
+def show_map_with_places(request):
     """
     Возвращает главную страницу со всеми локациями на карте.
     """
