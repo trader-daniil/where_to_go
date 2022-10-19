@@ -47,3 +47,11 @@ def show_place(request, place_id):
         safe=False,
         json_dumps_params={'ensure_ascii': False},
     )
+
+def test_verbtain(request):
+    place = Place.objects.first()
+    return render(
+        request=request,
+        template_name='test.html',
+        context={'place': place},
+    )

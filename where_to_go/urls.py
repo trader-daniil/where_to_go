@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .views import show_map_with_places, show_place
+from .views import show_map_with_places, show_place, test_verbtain
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('places/<int:place_id>', show_place, name='specific_place'),
     path('tinymce/', include('tinymce.urls')),
+    path('test/', test_verbtain),
 ]
 
 if settings.DEBUG:
