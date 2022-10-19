@@ -8,14 +8,16 @@ class Place(models.Model):
     Модель достопримечательности.
     """
     title = models.CharField(
-        max_length=40,
+        max_length=256,
         verbose_name='Название места',
     )
     description_short = models.TextField(
         verbose_name='Краткое описание места',
+        blank=True,
     )
     description_long = HTMLField(
         verbose_name='Развернутое описание места',
+        blank=True,
     )
     lat = models.FloatField(verbose_name='Широта в местоположении')
     lng = models.FloatField(verbose_name='Долгота в местоположении')
