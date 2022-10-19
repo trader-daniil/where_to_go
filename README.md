@@ -26,6 +26,15 @@
 - `MEDIA_URL` — по-умолчанию это `'/media/'`. [Что такое MEDIA_URL](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-MEDIA_URL).
 - `MEDIA_ROOT` — по-умолчанию это `'media'`. [Что такое MEDIA_ROOT](https://docs.djangoproject.com/en/3.0/ref/settings/#std:setting-MEDIA_ROOT). 
 
+
+## Загрузка данных
+
+В программе предусмотрен скрипт, который самостоятельно скачивает данные об объекте и сразу отображает на карте. Для этого нужно передать ссылку на данные, оформленные как на примере в конце и запустить скрипт командой:
+
+```
+python manage.py load_place.py '<ссылка_на_данные>'
+```
+
 ## Адреса
 
 Доступны следующие url адреса:
