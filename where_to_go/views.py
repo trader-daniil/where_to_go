@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from places.models import Place
 from django.http import JsonResponse
-
+from django.urls import reverse
 
 def serialize_place(place):
     """
@@ -17,8 +17,10 @@ def serialize_place(place):
             "lat": place.lat,
             "lng": place.lng
         },
-        "url_addres": place.get_absolute_url(),
-    }
+        "url_addres": reverse(
+            'specific_place',
+            kwargs={'place_id': str(place.id)}),
+        }
 
 
 def show_map_with_places(request):

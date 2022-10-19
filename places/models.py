@@ -25,20 +25,10 @@ class Place(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["title", "lat"],
+                fields=["title", "lat", "lng"],
                 name='title and latitude',
             ),
-            models.UniqueConstraint(
-                fields=["title", "lng"],
-                name='title and longitude',
-            )
         ]
-
-    def get_absolute_url(self):
-        return reverse(
-            'specific_place',
-            kwargs={'place_id': str(self.id)},
-        )
 
 
 class PlaceImage(models.Model):
