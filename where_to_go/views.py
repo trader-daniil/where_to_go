@@ -9,7 +9,6 @@ def serialize_place(place):
     Сериализует объект локации для шаблона.
     """
     return {
-        'place_id': place.id,
         'title': place.title,
         'imgs': [place_photo.image.url for place_photo in place.images.all()],
         'description_short': place.description_short,
@@ -18,10 +17,7 @@ def serialize_place(place):
             "lat": place.lat,
             "lng": place.lng
         },
-        'url_addres': reverse(
-            'specific_place',
-            kwargs={'place_id': str(place.id)}),
-        }
+    }
 
 
 def show_place(request, place_id):
