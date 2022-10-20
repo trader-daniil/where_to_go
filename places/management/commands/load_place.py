@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 
 import requests
 
-from places.models import Place, PlaceImage
+from places.models import Place, Image
 from django.core.files.base import ContentFile
 
 
@@ -31,7 +31,7 @@ class Command(BaseCommand):
             response = requests.get(url=image_url)
             response.raise_for_status()
             image = ContentFile(response.content)
-            created_imageplace, _ = PlaceImage.objects.get_or_create(
+            created_imageplace, _ = Image.objects.get_or_create(
                 place=created_place,
                 position=image_pos,
             )

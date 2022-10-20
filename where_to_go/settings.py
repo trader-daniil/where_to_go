@@ -17,6 +17,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 
 DEBUG = env.bool('DEBUG', True)
 
+
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
