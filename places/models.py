@@ -1,6 +1,5 @@
 from django.db import models
 from tinymce.models import HTMLField
-from django.urls import reverse
 
 
 class Place(models.Model):
@@ -25,13 +24,13 @@ class Place(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["title", "lat", "lng"],
+                fields=['title', 'lat', 'lng'],
                 name='title and latitude',
             ),
         ]
 
 
-class PlaceImage(models.Model):
+class Image(models.Model):
     """
     Модель изображения для места.
     """

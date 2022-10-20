@@ -10,14 +10,16 @@ env.read_env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", [])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', [])
 
 
-SECRET_KEY = env.str("SECRET_KEY")
+SECRET_KEY = env.str('SECRET_KEY')
 
+DEBUG = env.bool('DEBUG', True)
 
-DEBUG = env.bool("DEBUG", True)
-
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -29,9 +31,11 @@ INSTALLED_APPS = [
     'places',
     'adminsortable2',
     'tinymce',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -97,13 +101,13 @@ USE_TZ = True
 
 STATIC_URL = os.getenv('STATIC_URL', '/static/')
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "assets"),
+    os.path.join(BASE_DIR, 'assets'),
 )
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 
-MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, 'media'))
+MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
 
 
