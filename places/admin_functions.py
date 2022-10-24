@@ -1,15 +1,17 @@
-from django.utils.safestring import mark_safe
-import traceback
+from django.utils.html import format_html
 
 
 def show_image(self, obj):
-    """Отображает изображение объекта."""
-    width = obj.image.width
-    height = obj.image.height
-    try:
-        return mark_safe(
-            f'<img src="{obj.image.url}" width="{width}" height="{height}" '
-            'style="max-height:200px; max-width:300px" />',
-        )
-    except Exception:
-        print(traceback.format_exc())
+    """Возвращает html строку с данными для изображения."""
+    image_data = {
+        'width': obj.image.width,
+        'height': obj.image.height,
+        'image_url': obj.image.url,
+    }
+ 
+    formated_image = format_html(
+        '<img src="{image_url}" width="{width}" height="{height}" '
+        'style="max-height:200px; max-width:300px" />',
+        **image_data,
+    )
+    return formated_image
