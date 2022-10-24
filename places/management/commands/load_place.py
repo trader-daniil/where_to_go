@@ -43,10 +43,12 @@ class Command(BaseCommand):
         place_data = parse_place_characteristics(file_url=file_url)
         created_place, _ = Place.objects.get_or_create(
             title=place_data['title'],
-            description_short=place_data['description_short'],
-            description_long=place_data['description_long'],
             lat=float(place_data['coordinates']['lat']),
             lng=float(place_data['coordinates']['lng']),
+            defaults={
+                'description_short': place_data['description_short'],
+                'description_long': place_data['description_long'],
+            },
         )
 
         for image_pos, image_url in enumerate(
