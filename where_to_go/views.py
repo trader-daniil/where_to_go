@@ -42,7 +42,7 @@ def serialize_place_for_map(place):
             'placeId': place.id,
             'detailsUrl': reverse(
                 'specific_place',
-                kwargs={'place_id': str(place.id)},
+                kwargs={'place_id': place.id},
             ),
         },
     }

@@ -1,27 +1,19 @@
 from django.contrib import admin
-import traceback
 
-from django.utils.safestring import mark_safe
 from .models import Place, Image
 
 from adminsortable2.admin import SortableTabularInline
 from adminsortable2.admin import SortableAdminMixin
 from adminsortable2.admin import SortableAdminBase
 
+from .admin_functions import show_image
+
 
 class ImageInstance(SortableTabularInline):
     model = Image
-    readonly_fields = ('show_image',)
+    readonly_fields = ('submitted_images',)
     ordering = ['position']
-
-    def show_image(self, obj):
-        width = 200 * (obj.image.width/obj.image.height)
-        try:
-            return mark_safe(
-                f'<img src="{obj.image.url}" width="{width}" height=200 />',
-            )
-        except Exception:
-            print(traceback.format_exc())
+    submitted_images = show_image
 
 
 @admin.register(Place)
@@ -41,11 +33,5 @@ class SortablePlaceAdmin(SortableAdminBase, admin.ModelAdmin):
 @admin.register(Image)
 class AdminPlaceImage(SortableAdminMixin, admin.ModelAdmin):
     ordering = ['position']
-    readonly_fields = ('show_image',)
-
-    def show_image(self, obj):
-        return mark_safe(
-            f'<img src="{obj.image.url}" '
-            f'width="{obj.image.width}" '
-            f'height={obj.image.height} />',
-        )
+    readonly_fields = ('submitted_images',)
+    submitted_images = show_image
