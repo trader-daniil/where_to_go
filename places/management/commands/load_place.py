@@ -12,7 +12,7 @@ class Command(BaseCommand):
     help = 'Creates Place fields from json file'
 
     def handle(self, *args, **options):
-        file_url = options['fileurl']
+        file_url = options['file_url']
         response = requests.get(url=file_url)
         response.raise_for_status()
         place_characteristics = response.json()
@@ -31,11 +31,11 @@ class Command(BaseCommand):
             response = requests.get(url=image_url)
             response.raise_for_status()
             image = ContentFile(response.content)
-            created_imageplace, _ = Image.objects.get_or_create(
+            created_image_place, _ = Image.objects.get_or_create(
                 place=created_place,
                 position=image_pos,
             )
-            created_imageplace.image.save(
+            created_image_place.image.save(
                 name=f'{created_place.title}{image_pos}.jpg',
                 content=image,
                 save=True,
@@ -43,7 +43,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'fileurl',
+            'file_url',
             action='store',
             type=str,
             help='Указывает путь к файлу, который нужно скачать',
