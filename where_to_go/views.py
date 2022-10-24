@@ -20,7 +20,7 @@ def serialize_place(place):
 
 def show_place(request, place_id):
     """Возвращает страницу с местом по переданному id."""
-    place = Place.objects.prefetch_related('images').get(id=place_id)
+    place = Place.objects.get(id=place_id)
     serialized_place = serialize_place(place=place)
     return JsonResponse(
         data=serialized_place,
