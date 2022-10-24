@@ -25,9 +25,12 @@ class Place(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['title', 'lat', 'lng'],
-                name='title and latitude',
+                name='title and coordinates',
             ),
         ]
+
+    def __str__(self):
+        return self.title
 
 
 class Image(models.Model):
