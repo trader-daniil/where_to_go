@@ -7,9 +7,8 @@ from django.core.files.base import ContentFile
 
 
 class Command(BaseCommand):
-    """
-    Создает объект Place со значением полей из json файла.
-    """
+    """Создает объект Place со значением полей из json файла."""
+
     help = 'Creates Place fields from json file'
 
     def handle(self, *args, **options):
@@ -27,7 +26,8 @@ class Command(BaseCommand):
 
         for image_pos, image_url in enumerate(
             place_characteristics['imgs'],
-            start=1):
+            start=1,
+        ):
             response = requests.get(url=image_url)
             response.raise_for_status()
             image = ContentFile(response.content)
@@ -41,11 +41,10 @@ class Command(BaseCommand):
                 save=True,
             )
 
-
     def add_arguments(self, parser):
         parser.add_argument(
             'fileurl',
-            action='store', 
+            action='store',
             type=str,
             help='Указывает путь к файлу, который нужно скачать',
         )

@@ -5,25 +5,21 @@ from django.urls import reverse
 
 
 def serialize_place(place):
-    """
-    Сериализует объект локации для шаблона.
-    """
+    """Сериализует объект локации для шаблона."""
     return {
         'title': place.title,
         'imgs': [place_photo.image.url for place_photo in place.images.all()],
         'description_short': place.description_short,
         'description_long': place.description_long,
         'coordinates': {
-            "lat": place.lat,
-            "lng": place.lng
+            'lat': place.lat,
+            'lng': place.lng,
         },
     }
 
 
 def show_place(request, place_id):
-    """
-    Возвращает страницу с местом по переданному id.
-    """
+    """Возвращает страницу с местом по переданному id."""
     place = Place.objects.prefetch_related('images').get(id=place_id)
     serialized_place = serialize_place(place=place)
     return JsonResponse(
@@ -34,35 +30,31 @@ def show_place(request, place_id):
 
 
 def serialize_place_for_map(place):
-    """
-    Сериализует объект для JS скрипта.
-    """
-    serialized_place ={
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [place.lng, place.lat]
+    """Сериализует объект для JS скрипта."""
+    serialized_place = {
+        'type': 'Feature',
+        'geometry': {
+            'type': 'Point',
+            'coordinates': [place.lng, place.lat],
         },
-        "properties": {
-            "title": place.title,
-            "placeId": place.id,
-            "detailsUrl": reverse(
+        'properties': {
+            'title': place.title,
+            'placeId': place.id,
+            'detailsUrl': reverse(
                 'specific_place',
-                kwargs={'place_id': str(place.id)}),
+                kwargs={'place_id': str(place.id)},
+            ),
         },
     }
     return serialized_place
 
 
 def show_map_with_places(request):
-    """
-    Возвращает главную страницу со всеми локациями на карте.
-    """
+    """Возвращает главную страницу со всеми локациями на карте."""
     places = Place.objects.all()
-    
     data_for_map = {
-        "type": "FeatureCollection",
-        "features": [serialize_place_for_map(place) for place in places],
+        'type': 'FeatureCollection',
+        'features': [serialize_place_for_map(place) for place in places],
     }
 
     return render(
