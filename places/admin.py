@@ -1,12 +1,9 @@
+from adminsortable2.admin import (SortableAdminBase, SortableAdminMixin,
+                                  SortableTabularInline)
 from django.contrib import admin
 
-from .models import Place, Image
-
-from adminsortable2.admin import SortableTabularInline
-from adminsortable2.admin import SortableAdminMixin
-from adminsortable2.admin import SortableAdminBase
-
 from .admin_functions import show_image
+from .models import Image, Place
 
 
 class ImageInstance(SortableTabularInline):

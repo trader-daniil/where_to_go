@@ -1,16 +1,20 @@
-from django.core.management.base import BaseCommand
-
 import requests
-
-from places.models import Place, Image
 from django.core.files.base import ContentFile
+from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError
+
+from places.models import Image, Place
 
 
-def get_image(image_url):
+def get_image(image_url, image_name):
     """Создает объект изображения."""
     response = requests.get(url=image_url)
     response.raise_for_status()
-    return ContentFile(response.content)
+
+    return ContentFile(
+        content=response.content,
+        name=image_name,
+    )
 
 
 def parse_place_characteristics(file_url):
@@ -18,19 +22,6 @@ def parse_place_characteristics(file_url):
     response = requests.get(url=file_url)
     response.raise_for_status()
     return response.json()
-
-
-def create_image(place, image_pos, image):
-    """Связывает сзображение с объектом PlaceImage."""
-    created_image_place, _ = Image.objects.get_or_create(
-        place=place,
-        position=image_pos,
-    )
-    created_image_place.image.save(
-        name=f'{place.title}{image_pos}.jpg',
-        content=image,
-        save=True,
-    )
 
 
 class Command(BaseCommand):
@@ -41,25 +32,35 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         file_url = options['file_url']
         place_data = parse_place_characteristics(file_url=file_url)
-        created_place, _ = Place.objects.get_or_create(
-            title=place_data['title'],
-            lat=float(place_data['coordinates']['lat']),
-            lng=float(place_data['coordinates']['lng']),
-            defaults={
-                'description_short': place_data['description_short'],
-                'description_long': place_data['description_long'],
-            },
-        )
+        try:
+            created_place, _ = Place.objects.get_or_create(
+                title=place_data['title'],
+                lat=float(place_data['coordinates']['lat']),
+                lng=float(place_data['coordinates']['lng']),
+                defaults={
+                    'description_short': place_data.get(
+                        'description_short',
+                        '',
+                    ),
+                    'description_long': place_data.get(
+                        'description_long',
+                        '',
+                    ),
+                },
+            )
+        except IntegrityError:
+            return 'Проверьте заполненность полей title, lat, lng'
 
-        for image_pos, image_url in enumerate(
-            place_data['imgs'],
-            start=1,
-        ):
-            image = get_image(image_url=image_url)
-            create_image(
+        for image_pos, image_url in enumerate(place_data['imgs'], start=1):
+            image_name = f'{created_place.title}{image_pos}.jpg'
+            image = get_image(
+                image_url=image_url,
+                image_name=image_name,
+            )
+            Image.objects.create(
                 place=created_place,
-                image_pos=image_pos,
                 image=image,
+                position=image_pos,
             )
 
     def add_arguments(self, parser):

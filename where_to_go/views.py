@@ -1,7 +1,8 @@
-from django.shortcuts import render
-from places.models import Place
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.urls import reverse
+
+from places.models import Place
 
 
 def serialize_place(place):

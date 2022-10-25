@@ -1,8 +1,9 @@
-from django.contrib import admin
-from .views import show_map_with_places, show_place
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path, include
+from django.contrib import admin
+from django.urls import include, path
+
+from .views import show_map_with_places, show_place
 
 urlpatterns = [
     path('', show_map_with_places),
