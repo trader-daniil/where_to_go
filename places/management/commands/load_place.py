@@ -10,8 +10,8 @@ def create_place(place_data):
     """Скачивает данные о месте и возвращает его."""
     created_place, _ = Place.objects.get_or_create(
         title=place_data['title'],
-        lat=float(place_data['coordinates']['lat']),
-        lng=float(place_data['coordinates']['lng']),
+        lat=place_data['coordinates']['lat'],
+        lng=place_data['coordinates']['lng'],
         defaults={
             'description_short': place_data.get(
                 'description_short',
@@ -29,12 +29,17 @@ def create_place(place_data):
 def create_image(place, image_url, image_pos):
     """Сохраняет изображение и связывает его в местом."""
     image_name = f'{place.title}{image_pos}.jpg'
+    place_images = place.images.all()
     response = requests.get(url=image_url)
     response.raise_for_status()
     image = ContentFile(
         content=response.content,
         name=image_name,
     )
+    for place_image in place_images:
+        with open(place_image.image.path, 'rb') as current_image:
+            if current_image.read() == response.content:
+                return None
     Image.objects.create(
         place=place,
         image=image,
