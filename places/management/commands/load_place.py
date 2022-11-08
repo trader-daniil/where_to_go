@@ -17,12 +17,6 @@ def get_image(image_url, image_name):
     )
 
 
-def parse_place_characteristics(file_url):
-    """Получение характеристик достопримечательности из ответа."""
-    response = requests.get(url=file_url)
-    response.raise_for_status()
-    return response.json()
-
 
 class Command(BaseCommand):
     """Создает объект Place со значением полей из json файла."""
@@ -31,7 +25,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         file_url = options['file_url']
-        place_data = parse_place_characteristics(file_url=file_url)
+        response = requests.get(url=file_url)
+        response.raise_for_status()
+        place_data = response.json()
         try:
             created_place, _ = Place.objects.get_or_create(
                 title=place_data['title'],
@@ -53,9 +49,12 @@ class Command(BaseCommand):
 
         for image_pos, image_url in enumerate(place_data['imgs'], start=1):
             image_name = f'{created_place.title}{image_pos}.jpg'
-            image = get_image(
-                image_url=image_url,
-                image_name=image_name,
+
+            response = requests.get(url=image_url)
+            response.raise_for_status()
+            image = ContentFile(
+                content=response.content,
+                name=image_name,
             )
             Image.objects.create(
                 place=created_place,
