@@ -6,8 +6,11 @@ from django.db.utils import IntegrityError
 from places.models import Image, Place
 
 
-def create_place(place_data):
+def create_place(place_url):
     """Скачивает данные о месте и возвращает его."""
+    response = requests.get(url=place_url)
+    response.raise_for_status()
+    place_data = response.json()
     created_place, _ = Place.objects.get_or_create(
         title=place_data['title'],
         lat=place_data['coordinates']['lat'],
@@ -27,7 +30,7 @@ def create_place(place_data):
 
 
 def create_image(place, image_url, image_pos):
-    """Сохраняет изображение и связывает его в местом."""
+    """Сохраняет изображение и связывает его с местом."""
     image_name = f'{place.title}{image_pos}.jpg'
     place_images = place.images.all()
     response = requests.get(url=image_url)
@@ -54,20 +57,19 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         file_url = options['file_url']
-        response = requests.get(url=file_url)
-        response.raise_for_status()
-        place_data = response.json()
+        
         try:
-            place = create_place(place_data=place_data)
+            place = create_place(place_url=file_url)
         except IntegrityError:
             return 'Проверьте заполненность полей title, lat, lng'
-
+    """
         for image_pos, image_url in enumerate(place_data['imgs'], start=1):
             create_image(
                 place=place,
                 image_url=image_url,
                 image_pos=image_pos,
             )
+    """
 
     def add_arguments(self, parser):
         parser.add_argument(
